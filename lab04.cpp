@@ -14,9 +14,7 @@ class threadsafe_stack{
 public:
     threadsafe_stack(){}
 
-    threadsafe_stack(const threadsafe_stack &from){
-        if(this==&from)
-            return;
+    threadsafe_stack(const threadsafe_stack &from){        
         lock_guard<mutex> fromlock(from.mut);
         top.resize(from.size());
         transform(top.begin(), top.end() , from.top.begin(), [](T &ii) {return ii;});
