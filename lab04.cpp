@@ -12,7 +12,7 @@ class threadsafe_stack{
     vector<T> top;
     mutable mutex mut;
 public:
-    threadsafe_stack(){}
+    threadsafe_stack()=default;
 
     threadsafe_stack(const threadsafe_stack &from){        
         lock_guard<mutex> fromlock(from.mut);
@@ -35,7 +35,7 @@ public:
         top=move(from.top);
     }
 
-    threadsafe_stack&& operator=(threadsafe_stack &&from){
+    threadsafe_stack& operator=(threadsafe_stack &&from){
         if(this==&from)
             return *this;
         lock_guard<mutex> thislock(mut, defer_lock);
@@ -70,7 +70,7 @@ public:
         if(top.empty()){
             throw "stack is empty";
         }
-        val=top.back();
+        val=move_if_noexcept(top.back());
         top.pop_back();
     }
 
