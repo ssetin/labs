@@ -21,8 +21,8 @@ public:
     threadsafe_stack& operator=(const threadsafe_stack &from){
         if(this==&from)
             return *this;
-        lock_guard<mutex> thislock(mut, defer_lock);
-        lock_guard<mutex> fromlock(from.mut, defer_lock);
+        unique_lock<mutex> thislock(mut, defer_lock);
+        unique_lock<mutex> fromlock(from.mut, defer_lock);
         lock(thislock, fromlock);
         top=from.top;        
         return *this;
@@ -36,8 +36,8 @@ public:
     threadsafe_stack& operator=(threadsafe_stack &&from){
         if(this==&from)
             return *this;
-        lock_guard<mutex> thislock(mut, defer_lock);
-        lock_guard<mutex> fromlock(from.mut, defer_lock);
+        unique_lock<mutex> thislock(mut, defer_lock);
+        unique_lock<mutex> fromlock(from.mut, defer_lock);
         lock(thislock, fromlock);
         top=move(from.top);
 
