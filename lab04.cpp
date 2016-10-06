@@ -16,8 +16,7 @@ public:
 
     threadsafe_stack(const threadsafe_stack &from){        
         lock_guard<mutex> fromlock(from.mut);
-        top.resize(from.size());
-        transform(top.begin(), top.end() , from.top.begin(), [](T &ii) {return ii;});
+        top=from.top;
     }
     threadsafe_stack& operator=(const threadsafe_stack &from){
         if(this==&from)
@@ -25,8 +24,7 @@ public:
         lock_guard<mutex> thislock(mut, defer_lock);
         lock_guard<mutex> fromlock(from.mut, defer_lock);
         lock(thislock, fromlock);
-        top.resize(from.size());
-        transform(top.begin(), top.end() , from.top.begin(), [](T &ii) {return ii;});
+        top=from.top;        
         return *this;
     }
 
@@ -47,7 +45,6 @@ public:
     }
 
     ~threadsafe_stack(){
-        lock_guard<mutex> thislock(mut);
         top.clear();
     }
     void push(T val){
